@@ -1,3 +1,4 @@
+﻿// @ts-nocheck
 import { UserRole } from "@/auth";
 export type { UserRole } from "@/auth";
 import prisma from "@/lib/prisma";

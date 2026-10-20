@@ -51,7 +51,30 @@ export const AnyNull = runtime.AnyNull
 
 
 export const ModelName = {
-  users: 'users'
+  User: 'User',
+  LoginLog: 'LoginLog',
+  Transaction: 'Transaction',
+  SystemMetric: 'SystemMetric',
+  AuditLog: 'AuditLog',
+  Student: 'Student',
+  CategoryModel: 'CategoryModel',
+  Course: 'Course',
+  Chapter: 'Chapter',
+  Lesson: 'Lesson',
+  UserProgress: 'UserProgress',
+  Enrollment: 'Enrollment',
+  Assignment: 'Assignment',
+  Submission: 'Submission',
+  Attendance: 'Attendance',
+  Announcement: 'Announcement',
+  Notification: 'Notification',
+  Review: 'Review',
+  Payment: 'Payment',
+  Certificate: 'Certificate',
+  Quiz: 'Quiz',
+  QuizAttempt: 'QuizAttempt',
+  Document: 'Document',
+  CourseVideo: 'CourseVideo'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -70,17 +93,318 @@ export const TransactionIsolationLevel = runtime.makeStrictEnum({
 export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof typeof TransactionIsolationLevel]
 
 
-export const UsersScalarFieldEnum = {
+export const UserScalarFieldEnum = {
   id: 'id',
-  name: 'name',
   email: 'email',
   password: 'password',
+  name: 'name',
+  firstName: 'firstName',
+  lastName: 'lastName',
   role: 'role',
-  created_at: 'created_at',
-  updated_at: 'updated_at'
+  status: 'status',
+  avatarUrl: 'avatarUrl',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 } as const
 
-export type UsersScalarFieldEnum = (typeof UsersScalarFieldEnum)[keyof typeof UsersScalarFieldEnum]
+export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
+
+
+export const LoginLogScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  email: 'email',
+  ipAddress: 'ipAddress',
+  userAgent: 'userAgent',
+  status: 'status',
+  createdAt: 'createdAt'
+} as const
+
+export type LoginLogScalarFieldEnum = (typeof LoginLogScalarFieldEnum)[keyof typeof LoginLogScalarFieldEnum]
+
+
+export const TransactionScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  amount: 'amount',
+  type: 'type',
+  status: 'status',
+  createdAt: 'createdAt'
+} as const
+
+export type TransactionScalarFieldEnum = (typeof TransactionScalarFieldEnum)[keyof typeof TransactionScalarFieldEnum]
+
+
+export const SystemMetricScalarFieldEnum = {
+  id: 'id',
+  cpuUsage: 'cpuUsage',
+  memoryUsage: 'memoryUsage',
+  storageUsed: 'storageUsed',
+  storageTotal: 'storageTotal',
+  recordedAt: 'recordedAt'
+} as const
+
+export type SystemMetricScalarFieldEnum = (typeof SystemMetricScalarFieldEnum)[keyof typeof SystemMetricScalarFieldEnum]
+
+
+export const AuditLogScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  action: 'action',
+  details: 'details',
+  ipAddress: 'ipAddress',
+  createdAt: 'createdAt'
+} as const
+
+export type AuditLogScalarFieldEnum = (typeof AuditLogScalarFieldEnum)[keyof typeof AuditLogScalarFieldEnum]
+
+
+export const StudentScalarFieldEnum = {
+  id: 'id',
+  email: 'email',
+  name: 'name',
+  avatarUrl: 'avatarUrl',
+  gpa: 'gpa',
+  createdAt: 'createdAt'
+} as const
+
+export type StudentScalarFieldEnum = (typeof StudentScalarFieldEnum)[keyof typeof StudentScalarFieldEnum]
+
+
+export const CategoryModelScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  slug: 'slug',
+  createdAt: 'createdAt'
+} as const
+
+export type CategoryModelScalarFieldEnum = (typeof CategoryModelScalarFieldEnum)[keyof typeof CategoryModelScalarFieldEnum]
+
+
+export const CourseScalarFieldEnum = {
+  id: 'id',
+  code: 'code',
+  title: 'title',
+  slug: 'slug',
+  description: 'description',
+  imageUrl: 'imageUrl',
+  price: 'price',
+  level: 'level',
+  isPublished: 'isPublished',
+  instructorId: 'instructorId',
+  categoryId: 'categoryId',
+  thumbnail: 'thumbnail',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type CourseScalarFieldEnum = (typeof CourseScalarFieldEnum)[keyof typeof CourseScalarFieldEnum]
+
+
+export const ChapterScalarFieldEnum = {
+  id: 'id',
+  courseId: 'courseId',
+  title: 'title',
+  position: 'position',
+  isPublished: 'isPublished',
+  createdAt: 'createdAt'
+} as const
+
+export type ChapterScalarFieldEnum = (typeof ChapterScalarFieldEnum)[keyof typeof ChapterScalarFieldEnum]
+
+
+export const LessonScalarFieldEnum = {
+  id: 'id',
+  chapterId: 'chapterId',
+  title: 'title',
+  duration: 'duration',
+  videoUrl: 'videoUrl',
+  description: 'description',
+  position: 'position',
+  isPublished: 'isPublished',
+  createdAt: 'createdAt'
+} as const
+
+export type LessonScalarFieldEnum = (typeof LessonScalarFieldEnum)[keyof typeof LessonScalarFieldEnum]
+
+
+export const UserProgressScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  lessonId: 'lessonId',
+  isCompleted: 'isCompleted',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type UserProgressScalarFieldEnum = (typeof UserProgressScalarFieldEnum)[keyof typeof UserProgressScalarFieldEnum]
+
+
+export const EnrollmentScalarFieldEnum = {
+  id: 'id',
+  studentId: 'studentId',
+  userId: 'userId',
+  courseId: 'courseId',
+  progress: 'progress',
+  status: 'status',
+  lastModule: 'lastModule',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type EnrollmentScalarFieldEnum = (typeof EnrollmentScalarFieldEnum)[keyof typeof EnrollmentScalarFieldEnum]
+
+
+export const AssignmentScalarFieldEnum = {
+  id: 'id',
+  courseId: 'courseId',
+  title: 'title',
+  description: 'description',
+  dueDate: 'dueDate',
+  maxPoints: 'maxPoints',
+  maxScore: 'maxScore',
+  createdAt: 'createdAt'
+} as const
+
+export type AssignmentScalarFieldEnum = (typeof AssignmentScalarFieldEnum)[keyof typeof AssignmentScalarFieldEnum]
+
+
+export const SubmissionScalarFieldEnum = {
+  id: 'id',
+  assignmentId: 'assignmentId',
+  studentId: 'studentId',
+  submissionUrl: 'submissionUrl',
+  feedback: 'feedback',
+  status: 'status',
+  score: 'score',
+  submittedAt: 'submittedAt',
+  createdAt: 'createdAt'
+} as const
+
+export type SubmissionScalarFieldEnum = (typeof SubmissionScalarFieldEnum)[keyof typeof SubmissionScalarFieldEnum]
+
+
+export const AttendanceScalarFieldEnum = {
+  id: 'id',
+  studentId: 'studentId',
+  courseId: 'courseId',
+  date: 'date',
+  status: 'status'
+} as const
+
+export type AttendanceScalarFieldEnum = (typeof AttendanceScalarFieldEnum)[keyof typeof AttendanceScalarFieldEnum]
+
+
+export const AnnouncementScalarFieldEnum = {
+  id: 'id',
+  courseId: 'courseId',
+  title: 'title',
+  content: 'content',
+  createdAt: 'createdAt'
+} as const
+
+export type AnnouncementScalarFieldEnum = (typeof AnnouncementScalarFieldEnum)[keyof typeof AnnouncementScalarFieldEnum]
+
+
+export const NotificationScalarFieldEnum = {
+  id: 'id',
+  studentId: 'studentId',
+  message: 'message',
+  isRead: 'isRead',
+  createdAt: 'createdAt'
+} as const
+
+export type NotificationScalarFieldEnum = (typeof NotificationScalarFieldEnum)[keyof typeof NotificationScalarFieldEnum]
+
+
+export const ReviewScalarFieldEnum = {
+  id: 'id',
+  courseId: 'courseId',
+  userId: 'userId',
+  rating: 'rating',
+  comment: 'comment',
+  createdAt: 'createdAt'
+} as const
+
+export type ReviewScalarFieldEnum = (typeof ReviewScalarFieldEnum)[keyof typeof ReviewScalarFieldEnum]
+
+
+export const PaymentScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  courseId: 'courseId',
+  amount: 'amount',
+  currency: 'currency',
+  status: 'status',
+  stripePaymentIntentId: 'stripePaymentIntentId',
+  receiptUrl: 'receiptUrl',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type PaymentScalarFieldEnum = (typeof PaymentScalarFieldEnum)[keyof typeof PaymentScalarFieldEnum]
+
+
+export const CertificateScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  courseId: 'courseId',
+  certificateCode: 'certificateCode',
+  issueDate: 'issueDate',
+  pdfUrl: 'pdfUrl',
+  isRevoked: 'isRevoked'
+} as const
+
+export type CertificateScalarFieldEnum = (typeof CertificateScalarFieldEnum)[keyof typeof CertificateScalarFieldEnum]
+
+
+export const QuizScalarFieldEnum = {
+  id: 'id',
+  lessonId: 'lessonId',
+  title: 'title',
+  description: 'description',
+  isPublished: 'isPublished',
+  createdAt: 'createdAt'
+} as const
+
+export type QuizScalarFieldEnum = (typeof QuizScalarFieldEnum)[keyof typeof QuizScalarFieldEnum]
+
+
+export const QuizAttemptScalarFieldEnum = {
+  id: 'id',
+  quizId: 'quizId',
+  userId: 'userId',
+  score: 'score',
+  attemptedAt: 'attemptedAt'
+} as const
+
+export type QuizAttemptScalarFieldEnum = (typeof QuizAttemptScalarFieldEnum)[keyof typeof QuizAttemptScalarFieldEnum]
+
+
+export const DocumentScalarFieldEnum = {
+  id: 'id',
+  courseId: 'courseId',
+  title: 'title',
+  description: 'description',
+  fileUrl: 'fileUrl',
+  isPublished: 'isPublished',
+  uploadedBy: 'uploadedBy',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type DocumentScalarFieldEnum = (typeof DocumentScalarFieldEnum)[keyof typeof DocumentScalarFieldEnum]
+
+
+export const CourseVideoScalarFieldEnum = {
+  id: 'id',
+  title: 'title',
+  category: 'category',
+  videoUrl: 'videoUrl',
+  createdAt: 'createdAt'
+} as const
+
+export type CourseVideoScalarFieldEnum = (typeof CourseVideoScalarFieldEnum)[keyof typeof CourseVideoScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -99,11 +423,256 @@ export const NullsOrder = {
 export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
 
 
-export const usersOrderByRelevanceFieldEnum = {
-  name: 'name',
+export const UserOrderByRelevanceFieldEnum = {
+  id: 'id',
   email: 'email',
-  password: 'password'
+  password: 'password',
+  name: 'name',
+  firstName: 'firstName',
+  lastName: 'lastName',
+  avatarUrl: 'avatarUrl'
 } as const
 
-export type usersOrderByRelevanceFieldEnum = (typeof usersOrderByRelevanceFieldEnum)[keyof typeof usersOrderByRelevanceFieldEnum]
+export type UserOrderByRelevanceFieldEnum = (typeof UserOrderByRelevanceFieldEnum)[keyof typeof UserOrderByRelevanceFieldEnum]
+
+
+export const LoginLogOrderByRelevanceFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  email: 'email',
+  ipAddress: 'ipAddress',
+  userAgent: 'userAgent',
+  status: 'status'
+} as const
+
+export type LoginLogOrderByRelevanceFieldEnum = (typeof LoginLogOrderByRelevanceFieldEnum)[keyof typeof LoginLogOrderByRelevanceFieldEnum]
+
+
+export const TransactionOrderByRelevanceFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  type: 'type',
+  status: 'status'
+} as const
+
+export type TransactionOrderByRelevanceFieldEnum = (typeof TransactionOrderByRelevanceFieldEnum)[keyof typeof TransactionOrderByRelevanceFieldEnum]
+
+
+export const SystemMetricOrderByRelevanceFieldEnum = {
+  id: 'id'
+} as const
+
+export type SystemMetricOrderByRelevanceFieldEnum = (typeof SystemMetricOrderByRelevanceFieldEnum)[keyof typeof SystemMetricOrderByRelevanceFieldEnum]
+
+
+export const AuditLogOrderByRelevanceFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  action: 'action',
+  details: 'details',
+  ipAddress: 'ipAddress'
+} as const
+
+export type AuditLogOrderByRelevanceFieldEnum = (typeof AuditLogOrderByRelevanceFieldEnum)[keyof typeof AuditLogOrderByRelevanceFieldEnum]
+
+
+export const StudentOrderByRelevanceFieldEnum = {
+  id: 'id',
+  email: 'email',
+  name: 'name',
+  avatarUrl: 'avatarUrl'
+} as const
+
+export type StudentOrderByRelevanceFieldEnum = (typeof StudentOrderByRelevanceFieldEnum)[keyof typeof StudentOrderByRelevanceFieldEnum]
+
+
+export const CategoryModelOrderByRelevanceFieldEnum = {
+  id: 'id',
+  name: 'name',
+  slug: 'slug'
+} as const
+
+export type CategoryModelOrderByRelevanceFieldEnum = (typeof CategoryModelOrderByRelevanceFieldEnum)[keyof typeof CategoryModelOrderByRelevanceFieldEnum]
+
+
+export const CourseOrderByRelevanceFieldEnum = {
+  id: 'id',
+  code: 'code',
+  title: 'title',
+  slug: 'slug',
+  description: 'description',
+  imageUrl: 'imageUrl',
+  level: 'level',
+  instructorId: 'instructorId',
+  categoryId: 'categoryId',
+  thumbnail: 'thumbnail'
+} as const
+
+export type CourseOrderByRelevanceFieldEnum = (typeof CourseOrderByRelevanceFieldEnum)[keyof typeof CourseOrderByRelevanceFieldEnum]
+
+
+export const ChapterOrderByRelevanceFieldEnum = {
+  id: 'id',
+  courseId: 'courseId',
+  title: 'title'
+} as const
+
+export type ChapterOrderByRelevanceFieldEnum = (typeof ChapterOrderByRelevanceFieldEnum)[keyof typeof ChapterOrderByRelevanceFieldEnum]
+
+
+export const LessonOrderByRelevanceFieldEnum = {
+  id: 'id',
+  chapterId: 'chapterId',
+  title: 'title',
+  videoUrl: 'videoUrl',
+  description: 'description'
+} as const
+
+export type LessonOrderByRelevanceFieldEnum = (typeof LessonOrderByRelevanceFieldEnum)[keyof typeof LessonOrderByRelevanceFieldEnum]
+
+
+export const UserProgressOrderByRelevanceFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  lessonId: 'lessonId'
+} as const
+
+export type UserProgressOrderByRelevanceFieldEnum = (typeof UserProgressOrderByRelevanceFieldEnum)[keyof typeof UserProgressOrderByRelevanceFieldEnum]
+
+
+export const EnrollmentOrderByRelevanceFieldEnum = {
+  id: 'id',
+  studentId: 'studentId',
+  userId: 'userId',
+  courseId: 'courseId',
+  status: 'status',
+  lastModule: 'lastModule'
+} as const
+
+export type EnrollmentOrderByRelevanceFieldEnum = (typeof EnrollmentOrderByRelevanceFieldEnum)[keyof typeof EnrollmentOrderByRelevanceFieldEnum]
+
+
+export const AssignmentOrderByRelevanceFieldEnum = {
+  id: 'id',
+  courseId: 'courseId',
+  title: 'title',
+  description: 'description'
+} as const
+
+export type AssignmentOrderByRelevanceFieldEnum = (typeof AssignmentOrderByRelevanceFieldEnum)[keyof typeof AssignmentOrderByRelevanceFieldEnum]
+
+
+export const SubmissionOrderByRelevanceFieldEnum = {
+  id: 'id',
+  assignmentId: 'assignmentId',
+  studentId: 'studentId',
+  submissionUrl: 'submissionUrl',
+  feedback: 'feedback',
+  status: 'status'
+} as const
+
+export type SubmissionOrderByRelevanceFieldEnum = (typeof SubmissionOrderByRelevanceFieldEnum)[keyof typeof SubmissionOrderByRelevanceFieldEnum]
+
+
+export const AttendanceOrderByRelevanceFieldEnum = {
+  id: 'id',
+  studentId: 'studentId',
+  courseId: 'courseId',
+  status: 'status'
+} as const
+
+export type AttendanceOrderByRelevanceFieldEnum = (typeof AttendanceOrderByRelevanceFieldEnum)[keyof typeof AttendanceOrderByRelevanceFieldEnum]
+
+
+export const AnnouncementOrderByRelevanceFieldEnum = {
+  id: 'id',
+  courseId: 'courseId',
+  title: 'title',
+  content: 'content'
+} as const
+
+export type AnnouncementOrderByRelevanceFieldEnum = (typeof AnnouncementOrderByRelevanceFieldEnum)[keyof typeof AnnouncementOrderByRelevanceFieldEnum]
+
+
+export const NotificationOrderByRelevanceFieldEnum = {
+  id: 'id',
+  studentId: 'studentId',
+  message: 'message'
+} as const
+
+export type NotificationOrderByRelevanceFieldEnum = (typeof NotificationOrderByRelevanceFieldEnum)[keyof typeof NotificationOrderByRelevanceFieldEnum]
+
+
+export const ReviewOrderByRelevanceFieldEnum = {
+  id: 'id',
+  courseId: 'courseId',
+  userId: 'userId',
+  comment: 'comment'
+} as const
+
+export type ReviewOrderByRelevanceFieldEnum = (typeof ReviewOrderByRelevanceFieldEnum)[keyof typeof ReviewOrderByRelevanceFieldEnum]
+
+
+export const PaymentOrderByRelevanceFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  courseId: 'courseId',
+  currency: 'currency',
+  status: 'status',
+  stripePaymentIntentId: 'stripePaymentIntentId',
+  receiptUrl: 'receiptUrl'
+} as const
+
+export type PaymentOrderByRelevanceFieldEnum = (typeof PaymentOrderByRelevanceFieldEnum)[keyof typeof PaymentOrderByRelevanceFieldEnum]
+
+
+export const CertificateOrderByRelevanceFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  courseId: 'courseId',
+  certificateCode: 'certificateCode',
+  pdfUrl: 'pdfUrl'
+} as const
+
+export type CertificateOrderByRelevanceFieldEnum = (typeof CertificateOrderByRelevanceFieldEnum)[keyof typeof CertificateOrderByRelevanceFieldEnum]
+
+
+export const QuizOrderByRelevanceFieldEnum = {
+  id: 'id',
+  lessonId: 'lessonId',
+  title: 'title',
+  description: 'description'
+} as const
+
+export type QuizOrderByRelevanceFieldEnum = (typeof QuizOrderByRelevanceFieldEnum)[keyof typeof QuizOrderByRelevanceFieldEnum]
+
+
+export const QuizAttemptOrderByRelevanceFieldEnum = {
+  id: 'id',
+  quizId: 'quizId',
+  userId: 'userId'
+} as const
+
+export type QuizAttemptOrderByRelevanceFieldEnum = (typeof QuizAttemptOrderByRelevanceFieldEnum)[keyof typeof QuizAttemptOrderByRelevanceFieldEnum]
+
+
+export const DocumentOrderByRelevanceFieldEnum = {
+  id: 'id',
+  courseId: 'courseId',
+  title: 'title',
+  description: 'description',
+  fileUrl: 'fileUrl',
+  uploadedBy: 'uploadedBy'
+} as const
+
+export type DocumentOrderByRelevanceFieldEnum = (typeof DocumentOrderByRelevanceFieldEnum)[keyof typeof DocumentOrderByRelevanceFieldEnum]
+
+
+export const CourseVideoOrderByRelevanceFieldEnum = {
+  id: 'id',
+  title: 'title',
+  videoUrl: 'videoUrl'
+} as const
+
+export type CourseVideoOrderByRelevanceFieldEnum = (typeof CourseVideoOrderByRelevanceFieldEnum)[keyof typeof CourseVideoOrderByRelevanceFieldEnum]
 

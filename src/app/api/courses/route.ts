@@ -210,14 +210,16 @@ export async function POST(req: NextRequest) {
     let slug = baseSlug;
     let counter = 1;
 
-    while (await prisma.course.findUnique({ where: { slug } })) {
+    while (await prisma.course.findFirst({ where: { slug } })) {
       slug = `${baseSlug}-${counter}`;
       counter++;
     }
 
     // 4. Create new Course draft
+    const courseCode = `COURSE-${Date.now()}-${Math.random().toString(36).slice(2, 8).toUpperCase()}`;
     const newCourse = await prisma.course.create({
       data: {
+        code: courseCode,
         title,
         slug,
         description: description || "",

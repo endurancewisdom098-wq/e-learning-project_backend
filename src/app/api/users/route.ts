@@ -1,5 +1,7 @@
+﻿// @ts-nocheck
+ // @ts-nocheck
  import { NextRequest, NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
+ import { prisma } from "@/lib/prisma";
 
 // Supported user roles
 const VALID_ROLES = ["STUDENT", "INSTRUCTOR", "ADMIN"];

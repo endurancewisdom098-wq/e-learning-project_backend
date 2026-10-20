@@ -34,8 +34,8 @@ export async function GET(request: Request) {
     };
 
     // 3. Optional: Fetch fresh user data from database to ensure user still exists
-    const user = await prisma.users.findUnique({
-      where: { id: Number(decoded.userId) },
+    const user = await prisma.user.findUnique({
+      where: { id: String(decoded.userId) },
       select: { id: true, email: true, name: true, role: true },
     });
 

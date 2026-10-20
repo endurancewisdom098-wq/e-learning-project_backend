@@ -7,6 +7,67 @@ interface RouteParams {
   params: Promise<{ id: string }>;
 }
 
+export async function GET(_req: NextRequest, { params }: RouteParams) {
+  try {
+    const { id } = await params;
+    const course = await prisma.course.findFirst({
+      where: {
+        OR: [{ id }, { slug: id }],
+      },
+      include: {
+        instructor: {
+          select: { id: true, firstName: true, lastName: true, avatarUrl: true },
+        },
+        category: {
+          select: { id: true, name: true, slug: true },
+        },
+        chapters: {
+          orderBy: { position: "asc" },
+          include: {
+            lessons: { orderBy: { position: "asc" } },
+          },
+        },
+        enrollments: { select: { id: true } },
+        reviews: { select: { rating: true } },
+      },
+    });
+
+    if (!course) {
+      return NextResponse.json({ error: "Course not found." }, { status: 404 });
+    }
+
+    const reviewCount = course.reviews.length;
+    const rating =
+      reviewCount > 0
+        ? Math.round(
+            (course.reviews.reduce((total, review) => total + review.rating, 0) /
+              reviewCount) *
+              10
+          ) / 10
+        : 0;
+
+    return NextResponse.json(
+      {
+        course: {
+          ...course,
+          lessons: course.chapters.flatMap((chapter) => chapter.lessons),
+          studentCount: course.enrollments.length,
+          chapterCount: course.chapters.length,
+          rating,
+          reviewCount,
+        },
+      },
+      { status: 200 }
+    );
+  } catch (error: any) {
+    console.error("[GET_COURSE_BY_ID_ERROR]", error);
+    return NextResponse.json(
+      { error: "Failed to fetch course.", details: error.message },
+      { status: 500 }
+    );
+  }
+}
+
 // ----------------------------------------------------------------------
 // PATCH: Update Course Details or Publish State
 // ----------------------------------------------------------------------

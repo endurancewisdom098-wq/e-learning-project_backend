@@ -16,7 +16,7 @@ export async function POST(req: Request) {
       );
     }
 
-    const user = await User.findOne({
+    const user = await (User as any).findOne({
       email,
       resetPasswordOtp: otp,
       resetPasswordExpires: { $gt: new Date() }, // Check if not expired

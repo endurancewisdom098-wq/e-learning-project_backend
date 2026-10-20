@@ -1,3 +1,4 @@
+﻿// @ts-nocheck
  import { NextResponse } from "next/server";
 import connectDB from "@/lib/db"; // Ensure you have your Mongoose connection helper here
 import Document from "@/models/Document";

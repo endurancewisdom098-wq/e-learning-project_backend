@@ -58,7 +58,7 @@ export async function POST(request: Request) {
       .toLowerCase();
 
     // Check if user already exists
-    const existingUser = await prisma.users.findUnique({
+    const existingUser = await prisma.user.findUnique({
       where: {
         email: normalizedEmail,
       },
@@ -77,10 +77,11 @@ export async function POST(request: Request) {
     const normalizedRole =
       typeof role === "string"
         ? role.trim().toUpperCase()
-        : "USER";
+        : "STUDENT";
 
     if (
-      normalizedRole !== "USER" &&
+      normalizedRole !== "STUDENT" &&
+      normalizedRole !== "INSTRUCTOR" &&
       normalizedRole !== "ADMIN"
     ) {
       return NextResponse.json(
@@ -99,12 +100,12 @@ export async function POST(request: Request) {
     );
 
     // Create user
-    const user = await prisma.users.create({
+    const user = await prisma.user.create({
       data: {
         name: name?.trim() || null,
         email: normalizedEmail,
         password: passwordHash,
-        role: normalizedRole,
+        role: normalizedRole as any,
       },
       select: {
         id: true,

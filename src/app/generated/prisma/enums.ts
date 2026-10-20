@@ -9,9 +9,41 @@
 * 🟢 You can import this file directly.
 */
 
-export const users_role = {
-  USER: 'USER',
-  ADMIN: 'ADMIN'
+export const Role = {
+  STUDENT: 'STUDENT',
+  INSTRUCTOR: 'INSTRUCTOR',
+  ADMIN: 'ADMIN',
+  SUPER_ADMIN: 'SUPER_ADMIN'
 } as const
 
-export type users_role = (typeof users_role)[keyof typeof users_role]
+export type Role = (typeof Role)[keyof typeof Role]
+
+
+export const CourseStatus = {
+  DRAFT: 'DRAFT',
+  PENDING_APPROVAL: 'PENDING_APPROVAL',
+  PUBLISHED: 'PUBLISHED',
+  REJECTED: 'REJECTED'
+} as const
+
+export type CourseStatus = (typeof CourseStatus)[keyof typeof CourseStatus]
+
+
+export const UserStatus = {
+  ACTIVE: 'ACTIVE',
+  SUSPENDED: 'SUSPENDED',
+  PENDING: 'PENDING'
+} as const
+
+export type UserStatus = (typeof UserStatus)[keyof typeof UserStatus]
+
+
+export const Category = {
+  REACT: 'REACT',
+  JAVASCRIPT: 'JAVASCRIPT',
+  DATA_SCIENCE_QUIZ: 'DATA_SCIENCE_QUIZ',
+  UI_UX_WORKSHOP: 'UI_UX_WORKSHOP',
+  WEB_DEVELOPMENT: 'WEB_DEVELOPMENT'
+} as const
+
+export type Category = (typeof Category)[keyof typeof Category]

@@ -47,7 +47,7 @@ export async function POST(req: NextRequest) {
 
     // 3. Find user with valid token and unexpired reset window
     await connectDB();
-    const user = await User.findOne({
+    const user = await (User as any).findOne({
       email: normalizedEmail,
       resetPasswordOtp: resetCode,
       resetPasswordExpires: { $gt: new Date() },

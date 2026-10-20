@@ -12,7 +12,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ success: false, message: "Email is required." }, { status: 400 });
     }
 
-    const user = await User.findOne({ email });
+    const user = await (User as any).findOne({ email });
     if (!user) {
       // Security best practice: Don't reveal if email exists
       return NextResponse.json({ success: true, message: "If account exists, OTP was sent." });

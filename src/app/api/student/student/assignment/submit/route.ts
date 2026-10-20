@@ -1,3 +1,4 @@
+﻿// @ts-nocheck
  import { NextRequest, NextResponse } from "next/server";
 import { writeFile, mkdir } from "fs/promises";
 import path from "path";

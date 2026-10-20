@@ -1,6 +1,6 @@
 generator client {
-  provider = "prisma-client.js"
-  output   = "../app/generated/prisma"
+  provider = "prisma-client"
+  output   = "../src/app/generated/prisma"
 }
 
 datasource db {
@@ -27,70 +27,80 @@ enum UserStatus {
   PENDING
 }
 
+enum Category {
+  REACT
+  JAVASCRIPT
+  DATA_SCIENCE_QUIZ
+  UI_UX_WORKSHOP
+  WEB_DEVELOPMENT
+}
 
 model User {
-  id          String       @id @default(uuid())
-  email       String       @unique (map: "email") @db.VarChar(150)
-  password    String       @db.VarChar(255)
+  id                 String          @id @default(uuid())
+  email              String          @unique(map: "email") @db.VarChar(150)
+  password           String          @db.VarChar(255)
+  name               String?         @db.VarChar(100)
+  firstName          String?
+  lastName           String?
+  role               Role            @default(STUDENT)
+  status             UserStatus      @default(ACTIVE)
+  avatarUrl          String?
+  createdAt          DateTime        @default(now()) @db.Timestamp(0)
+  updatedAt          DateTime        @default(now()) @db.Timestamp(0)
 
-  name        String?       @db.VarChar(100)
-  firstName   String?
-  lastName    String?
-
-  role        Role         @default(STUDENT)
-  status      UserStatus   @default(ACTIVE)
-  avatarUrl   String?
-  createdAt   DateTime     @default(now())  @db.Timestamp(0)
-  updatedAt   DateTime     @default(now())  @db.Timestamp(0)
-  
-  
-  // Relations
-  transactions Transaction[]
-  auditLogs    AuditLog[]
-  LoginLogs    LoginLog[]
+  transactions       Transaction[]
+  auditLogs          AuditLog[]
+  loginLogs          LoginLog[]
+  courses            Course[]
+  enrollments        Enrollment[]
+  lessonsCompleted   UserProgress[]
+  payments           Payment[]
+  certificates       Certificate[]
+  quizAttempts       QuizAttempt[]
+  reviews            Review[]
+  documents          Document[]
 }
 
 model LoginLog {
   id        String   @id @default(cuid())
-  userId    String?  // Nullable if user email wasn't found
+  userId    String?
   email     String
   ipAddress String
   userAgent String
-  status    String   // "SUCCESS" or "FAILED"
+  status    String
   createdAt DateTime @default(now())
 
   user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
 }
 
 model Transaction {
-  id          String   @id @default(uuid())
-  userId      String
-  amount      Float
-  type        String   // TUITION_FEE, COURSE_PURCHASE, REFUND
-  status      String   // COMPLETED, PENDING, FAILED
-  createdAt   DateTime @default(now())
-  user        User     @relation(fields: [userId], references: [id])
+  id        String   @id @default(uuid())
+  userId    String
+  amount    Float
+  type      String
+  status    String
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id])
 }
 
 model SystemMetric {
   id           String   @id @default(uuid())
-  cpuUsage     Float    // e.g. 24.5%
-  memoryUsage  Float    // e.g. 62.1%
-  storageUsed  Float    // GB
-  storageTotal Float    // GB
+  cpuUsage     Float
+  memoryUsage  Float
+  storageUsed  Float
+  storageTotal Float
   recordedAt   DateTime @default(now())
 }
 
 model AuditLog {
   id        String   @id @default(uuid())
   userId    String?
-  action    String   // e.g. "USER_SUSPENDED", "COURSE_APPROVED"
+  action    String
   details   String
   ipAddress String?
   createdAt DateTime @default(now())
   user      User?    @relation(fields: [userId], references: [id])
 }
-
 
 model Student {
   id            String         @id @default(uuid())
@@ -105,49 +115,128 @@ model Student {
   createdAt     DateTime       @default(now())
 }
 
+model CategoryModel {
+  id        String   @id @default(uuid())
+  name      String
+  slug      String   @unique
+  createdAt DateTime @default(now())
+  courses   Course[]
+}
+
 model Course {
   id            String         @id @default(uuid())
-  code          String         @unique // e.g., CS101
+  code          String         @unique
   title         String
-  instructor    String
+  slug          String?
+  description   String?
+  imageUrl      String?
+  price         Float          @default(0)
+  level         String         @default("BEGINNER")
+  isPublished   Boolean        @default(true)
+  instructorId  String
+  categoryId    String?
   thumbnail     String?
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @default(now())
+
+  instructor    User           @relation(fields: [instructorId], references: [id])
+  category      CategoryModel? @relation(fields: [categoryId], references: [id])
   enrollments   Enrollment[]
   assignments   Assignment[]
   announcements Announcement[]
   attendances   Attendance[]
-  
+  chapters      Chapter[]
+  reviews       Review[]
+  payments      Payment[]
+  certificates  Certificate[]
+  documents     Document[]
+}
+
+model Chapter {
+  id        String   @id @default(uuid())
+  courseId  String
+  title     String
+  position  Int      @default(0)
+  isPublished Boolean @default(true)
+  createdAt DateTime @default(now())
+
+  course    Course   @relation(fields: [courseId], references: [id])
+  lessons   Lesson[]
+}
+
+model Lesson {
+  id          String        @id @default(uuid())
+  chapterId   String
+  title       String
+  duration    Int           @default(0)
+  videoUrl    String?
+  description String?
+  position    Int           @default(0)
+  isPublished Boolean       @default(true)
+  createdAt   DateTime      @default(now())
+
+  chapter     Chapter       @relation(fields: [chapterId], references: [id])
+  userProgress UserProgress[]
+  quiz        Quiz?
+}
+
+model UserProgress {
+  id          String   @id @default(uuid())
+  userId      String
+  lessonId    String
+  isCompleted Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user        User     @relation(fields: [userId], references: [id])
+  lesson      Lesson   @relation(fields: [lessonId], references: [id])
+
+  @@unique([userId, lessonId], name: "userId_lessonId")
 }
 
 model Enrollment {
   id         String   @id @default(uuid())
-  studentId  String
+  studentId  String?
+  userId     String?
   courseId   String
-  progress   Float    @default(0.0) // 0 - 100%
-  status     String   @default("ACTIVE") // ACTIVE, COMPLETED
-  lastModule String?  // e.g., "Module 3: Functions"
-  student    Student  @relation(fields: [studentId], references: [id])
-  course     Course   @relation(fields: [courseId], references: [id])
+  progress   Float    @default(0.0)
+  status     String   @default("ACTIVE")
+  lastModule String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  student    Student?  @relation(fields: [studentId], references: [id])
+  user       User?     @relation(fields: [userId], references: [id])
+  course     Course    @relation(fields: [courseId], references: [id])
+
+  @@unique([userId, courseId], name: "userId_courseId")
 }
 
 model Assignment {
   id          String       @id @default(uuid())
   courseId    String
   title       String
+  description String?
   dueDate     DateTime
   maxPoints   Int          @default(100)
+  maxScore    Int          @default(100)
+  createdAt   DateTime     @default(now())
   course      Course       @relation(fields: [courseId], references: [id])
   submissions Submission[]
 }
 
 model Submission {
-  id           String     @id @default(uuid())
-  assignmentId String
-  studentId    String
-  status       String     @default("PENDING") // PENDING, SUBMITTED, GRADED
-  score        Float?
-  submittedAt  DateTime?
-  assignment   Assignment @relation(fields: [assignmentId], references: [id])
-  student      Student    @relation(fields: [studentId], references: [id])
+  id            String     @id @default(uuid())
+  assignmentId  String
+  studentId     String
+  submissionUrl String?
+  feedback      String?
+  status        String     @default("PENDING")
+  score         Float?
+  submittedAt   DateTime?
+  createdAt     DateTime   @default(now())
+  assignment    Assignment @relation(fields: [assignmentId], references: [id])
+  student       Student    @relation(fields: [studentId], references: [id])
 }
 
 model Attendance {
@@ -155,7 +244,7 @@ model Attendance {
   studentId String
   courseId  String
   date      DateTime
-  status    String   // PRESENT, ABSENT, EXCUSED
+  status    String
   student   Student  @relation(fields: [studentId], references: [id])
   course    Course   @relation(fields: [courseId], references: [id])
 }
@@ -178,19 +267,90 @@ model Notification {
   student   Student  @relation(fields: [studentId], references: [id])
 }
 
+model Review {
+  id        String   @id @default(uuid())
+  courseId  String
+  userId    String
+  rating    Float
+  comment   String?
+  createdAt DateTime @default(now())
 
-enum Category {
-  REACT
-  JAVASCRIPT
-  DATA_SCIENCE_QUIZ
-  UI_UX_WORKSHOP
-  WEB_DEVELOPMENT
+  course    Course   @relation(fields: [courseId], references: [id])
+  user      User     @relation(fields: [userId], references: [id])
+}
+
+model Payment {
+  id                    String   @id @default(uuid())
+  userId                String
+  courseId              String
+  amount                Float
+  currency              String   @default("USD")
+  status                String   @default("PENDING")
+  stripePaymentIntentId  String?
+  receiptUrl            String?
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+
+  user                  User     @relation(fields: [userId], references: [id])
+  course                Course   @relation(fields: [courseId], references: [id])
+}
+
+model Certificate {
+  id             String   @id @default(uuid())
+  userId         String
+  courseId       String
+  certificateCode String   @unique
+  issueDate      DateTime @default(now())
+  pdfUrl         String?
+  isRevoked      Boolean  @default(false)
+
+  user           User     @relation(fields: [userId], references: [id])
+  course         Course   @relation(fields: [courseId], references: [id])
+}
+
+model Quiz {
+  id          String       @id @default(uuid())
+  lessonId    String       @unique
+  title       String
+  description String?
+  isPublished Boolean      @default(true)
+  createdAt   DateTime     @default(now())
+
+  lesson      Lesson       @relation(fields: [lessonId], references: [id])
+  attempts    QuizAttempt[]
+}
+
+model QuizAttempt {
+  id          String   @id @default(uuid())
+  quizId      String
+  userId      String
+  score       Float?
+  attemptedAt DateTime @default(now())
+
+  quiz        Quiz     @relation(fields: [quizId], references: [id])
+  user        User     @relation(fields: [userId], references: [id])
+}
+
+model Document {
+  id          String   @id @default(uuid())
+  courseId    String
+  title       String
+  description String?
+  fileUrl     String
+  isPublished Boolean  @default(true)
+  uploadedBy  String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  course      Course   @relation(fields: [courseId], references: [id])
+  uploader    User?    @relation(fields: [uploadedBy], references: [id])
 }
 
 model CourseVideo {
-  id          String   @id @default(cuid())
-  title       String
-  category    Category
-  videoUrl    String
-  createdAt   DateTime @default(now())
+  id        String   @id @default(cuid())
+  title     String
+  category  Category
+  videoUrl  String
+  createdAt DateTime @default(now())
 }
+

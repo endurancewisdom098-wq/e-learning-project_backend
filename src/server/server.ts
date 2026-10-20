@@ -1,19 +1,22 @@
 import express, { Request, Response, NextFunction } from "express";
 import cors from "cors";
 import dotenv from "dotenv";
-import courseRoutes from '../routes/courseroute';
-import enrollmentRoutes from '../routes/enrollmentroute';
-import uploadRoutes from './routes/uploadRoutes';
-import { AccessToken } from 'livekit-server-sdk';
+import { AccessToken } from "livekit-server-sdk";
+
+// Load environment variables immediately at the top
+dotenv.config();
+
+import courseRoutes from "../routes/courseroute";
+import enrollmentRoutes from "../routes/enrollmentroute";
+import uploadRoutes from "../routes/uploadroute";
 import livekitRouter from "../routes/livekit.routes";
 import authRouter from "../routes/authroutes";
-import 'dotenv/config';
-
-dotenv.config();
 
 const app = express();
 
-// Middlewares
+// ==========================================
+// MIDDLEWARES
+// ==========================================
 app.use(
   cors({
     origin: process.env.CLIENT_URL || "http://localhost:3000",
@@ -28,53 +31,52 @@ app.use(express.urlencoded({ extended: true }));
 // ==========================================
 // API ROUTES
 // ==========================================
-app.use('/api/v1/courses', courseRoutes);
-app.use('/api/v1/enrollments', enrollmentRoutes);
-app.use('/api/v1/upload', uploadRoutes);
+app.use("/api/v1/courses", courseRoutes);
+app.use("/api/v1/enrollments", enrollmentRoutes);
+app.use("/api/v1/upload", uploadRoutes);
 app.use("/api/v1/auth", authRouter);
+
+// Option A: If you are using the separate livekitRouter file for routes, make sure it's mounted:
 app.use("/api/livekit", livekitRouter);
 
-// ==========================================
-// LIVEKIT TOKEN GENERATION ENDPOINT
-// ==========================================
-const generateLiveKitToken = (roomName: string, participantName: string): string => {
+// Option B: Inline Token Generation (matching your frontend call to /api/livekit/token)
+const generateLiveKitToken = async (roomName: string, participantName: string, isHost: boolean): Promise<string> => {
   const apiKey = process.env.LIVEKIT_API_KEY;
   const apiSecret = process.env.LIVEKIT_API_SECRET;
 
   if (!apiKey || !apiSecret) {
-    throw new Error('LiveKit API keys are missing in backend environment variables.');
+    throw new Error("LiveKit API keys are missing in backend environment variables.");
   }
 
-  // Create an Access Token
   const at = new AccessToken(apiKey, apiSecret, {
-    identity: participantName, // Unique username or user ID
+    identity: participantName,
   });
 
-  // Grant permissions to join the room and publish/subscribe to audio/video
   at.addGrant({
     roomJoin: true,
     room: roomName,
     canPublish: true,
     canSubscribe: true,
+    roomAdmin: isHost, // Gives host privileges if true
   });
 
-  // Return the signed JWT token string
   return at.toJwt();
 };
 
-app.post('/api/get-token', (req: Request, res: Response) => {
-  const { roomName, userName } = req.body;
+app.post("/api/livekit/token", async (req: Request, res: Response) => {
+  const { roomName, userName, isHost } = req.body;
 
   if (!roomName || !userName) {
-    return res.status(400).json({ error: 'Both roomName and userName are required fields.' });
+    return res.status(400).json({ error: "Both roomName and userName are required fields." });
   }
 
   try {
-    const token = generateLiveKitToken(roomName, userName);
+    const token = await generateLiveKitToken(roomName, userName, !!isHost);
     return res.json({ token });
-  } catch (error: any) {
-    console.error('Error generating LiveKit token:', error.message);
-    return res.status(500).json({ error: error.message });
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : "Internal Server Error";
+    console.error("Error generating LiveKit token:", message);
+    return res.status(500).json({ error: message });
   }
 });
 
@@ -87,8 +89,8 @@ app.get("/", (_req: Request, res: Response) => {
     message: "E-Learning Backend API is running",
   });
 });
-
-// 404 Route Handler (Catches non-existent API endpoints)
+ 
+// 404 Route Handler
 app.use((_req: Request, res: Response) => {
   res.status(404).json({
     status: "error",
@@ -99,6 +101,11 @@ app.use((_req: Request, res: Response) => {
 // Global Error Handling Middleware
 app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
   console.error("Unhandled Error:", err.stack);
+  if (res.headersSent) {
+    _next(err);
+    return;
+  }
+
   res.status(500).json({
     status: "error",
     message: err.message || "Internal Server Error",

@@ -20,7 +20,7 @@ const globalForPrisma = globalThis as typeof globalThis & {
   prisma?: PrismaClient;
 };
 
-export const prisma: any =
+export const prisma =
   globalForPrisma.prisma ??
   new PrismaClient({
     adapter,
@@ -28,7 +28,7 @@ export const prisma: any =
       process.env.NODE_ENV === "development"
         ? ["query", "error", "warn"]
         : ["error"],
-  } as any);
+  });
 
 if (process.env.NODE_ENV !== "production") {
   globalForPrisma.prisma = prisma;

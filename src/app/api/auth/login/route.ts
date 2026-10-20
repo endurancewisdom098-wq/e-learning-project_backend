@@ -19,7 +19,7 @@ export async function POST(request: Request) {
       );
     }
 
-    const user = await prisma.users.findUnique({
+    const user = await prisma.user.findUnique({
       where: { email: email.trim().toLowerCase() },
     });
 

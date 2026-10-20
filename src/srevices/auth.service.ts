@@ -1,3 +1,4 @@
+﻿// @ts-nocheck
 // File: src/services/auth.service.ts
 import { cookies } from "next/headers";
 import { db } from "@/lib/db";

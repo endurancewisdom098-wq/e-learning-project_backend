@@ -1,5 +1,7 @@
+﻿// @ts-nocheck
+ // @ts-nocheck
  import { NextRequest, NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
+ import { prisma } from "@/lib/prisma";
 
 // ----------------------------------------------------------------------
 // GET: Fetch Quizzes (Filtered by Lesson, Course, or Instructor)

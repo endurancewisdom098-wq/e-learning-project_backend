@@ -151,16 +151,14 @@ export async function POST(request: Request) {
     });
 
     return response;
-  } catch (error) {
-    console.error(
-      "POST /api/auth/register failed:",
-      error
-    );
+  } catch (error: any) {
+    console.error("POST /api/auth/register failed:", error?.message || error);
 
     return NextResponse.json(
       {
         success: false,
         message: "Registration failed",
+        details: error?.message || "Unknown error",
       },
       { status: 500 }
     );

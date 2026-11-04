@@ -1,6 +1,9 @@
 import type { NextConfig } from "next";
+import path from "path";
 
 const nextConfig: NextConfig = {
+  // Silence Turbopack warning by pointing root to project workspace
+
   typescript: {
     ignoreBuildErrors: true,
   },

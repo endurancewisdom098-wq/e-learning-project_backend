@@ -1,7 +1,6 @@
  import { Request, Response, NextFunction } from 'express';
-import jwt from 'jsonwebtoken';
-
-const JWT_SECRET = process.env.JWT_SECRET || 'your-fallback-secret-key';
+ import jwt from 'jsonwebtoken';
+ import { getJwtSecret } from '../lib/jwt-secret';
 
 // Interface defining the expected payload inside your JWT
 export interface JwtPayload {
@@ -37,10 +36,14 @@ export const authenticateToken = (
   }
 
   try {
-    const decoded = jwt.verify(token, JWT_SECRET) as JwtPayload;
+    const decoded = jwt.verify(token, getJwtSecret()) as JwtPayload;
     req.user = decoded;
     next();
   } catch (error) {
+    if (error instanceof Error && error.message === 'JWT_SECRET is not configured') {
+      res.status(500).json({ error: 'Authentication is not configured.' });
+      return;
+    }
     res.status(403).json({ error: 'Invalid or expired token.' });
     return;
   }

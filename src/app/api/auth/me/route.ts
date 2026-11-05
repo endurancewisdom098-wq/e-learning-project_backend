@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
 import { cookies } from "next/headers";
 import { prisma } from "@/lib/prisma";
+import { getJwtSecret } from "@/lib/jwt-secret";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -26,8 +27,7 @@ export async function GET(request: Request) {
     }
 
     // 2. Verify JWT token
-    const secret = process.env.JWT_SECRET || "fallback_secret_key";
-    const decoded = jwt.verify(token, secret) as {
+    const decoded = jwt.verify(token, getJwtSecret()) as {
       userId: string | number;
       email: string;
       role: string;
@@ -61,6 +61,12 @@ export async function GET(request: Request) {
     );
   } catch (error) {
     console.error("API /auth/me error:", error);
+    if (error instanceof Error && error.message === "JWT_SECRET is not configured") {
+      return NextResponse.json(
+        { success: false, user: null, message: "Authentication is not configured" },
+        { status: 500 }
+      );
+    }
     return NextResponse.json(
       { success: false, user: null, message: "Invalid or expired token" },
       { status: 401 }

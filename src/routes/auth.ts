@@ -2,9 +2,11 @@ import { Request, Response } from "express";
 import { prisma } from "../lib/prisma";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import { getJwtSecret } from "../lib/jwt-secret";
 
 export async function loginHandler(req: Request, res: Response) {
   try {
+    const secret = getJwtSecret();
     const { email, password } = req.body;
 
     const user = await prisma.user.findUnique({ where: { email } });
@@ -14,7 +16,7 @@ export async function loginHandler(req: Request, res: Response) {
 
     const token = jwt.sign(
       { userId: user.id, role: user.role },
-      process.env.JWT_SECRET!,
+      secret,
       { expiresIn: "7d" }
     );
 
@@ -26,6 +28,9 @@ export async function loginHandler(req: Request, res: Response) {
 
     return res.status(200).json({ message: "Login successful", user, token });
   } catch (error) {
+    if (error instanceof Error && error.message === "JWT_SECRET is not configured") {
+      return res.status(500).json({ error: "Authentication is not configured." });
+    }
     return res.status(500).json({ error: "Server error" });
   }
 }

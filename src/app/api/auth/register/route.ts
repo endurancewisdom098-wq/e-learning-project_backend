@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { prisma } from "@/lib/prisma";
+import { getJwtSecret } from "@/lib/jwt-secret";
 
 export const runtime = "nodejs";
 
@@ -18,6 +19,7 @@ export async function OPTIONS() {
 
 export async function POST(request: Request) {
   try {
+    const secret = getJwtSecret();
     const body = await request.json();
 
     const {
@@ -114,14 +116,6 @@ export async function POST(request: Request) {
         role: true,
       },
     });
-
-    const secret = process.env.JWT_SECRET;
-
-    if (!secret) {
-      throw new Error(
-        "JWT_SECRET is not configured"
-      );
-    }
 
     const token = jwt.sign(
       {

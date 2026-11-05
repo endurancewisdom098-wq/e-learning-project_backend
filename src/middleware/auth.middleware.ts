@@ -2,10 +2,7 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { jwtVerify } from 'jose';
-
-const JWT_SECRET = new TextEncoder().encode(
-  process.env.JWT_SECRET || 'your-secret-key-at-least-32-chars-long'
-);
+import { getJwtSecret } from '@/lib/jwt-secret';
 
 // Define paths that do NOT require authentication (Must include full API paths!)
 const PUBLIC_PATHS = [
@@ -45,8 +42,19 @@ export async function middleware(request: NextRequest) {
   }
 
   // 3. Verify JWT
+  let secret: Uint8Array;
   try {
-    const { payload } = await jwtVerify(token, JWT_SECRET);
+    secret = new TextEncoder().encode(getJwtSecret());
+  } catch (error) {
+    console.error('JWT authentication is not configured:', error);
+    return NextResponse.json(
+      { error: 'Authentication is not configured.' },
+      { status: 500 }
+    );
+  }
+
+  try {
+    const { payload } = await jwtVerify(token, secret);
 
     // Forward verified user data to downstream Route Handlers via custom headers
     const requestHeaders = new Headers(request.headers);

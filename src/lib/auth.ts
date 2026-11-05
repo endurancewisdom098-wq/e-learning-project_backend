@@ -1,10 +1,7 @@
 // File: src/lib/auth.ts
 import bcrypt from "bcryptjs";
 import { SignJWT, jwtVerify } from "jose";
-
-const JWT_SECRET = new TextEncoder().encode(
-  process.env.JWT_SECRET || "fallback_super_secret_key_change_in_production"
-);
+import { getJwtSecret } from "@/lib/jwt-secret";
 
 // Hash password safely
 export async function hashPassword(password: string): Promise<string> {
@@ -23,13 +20,15 @@ export async function signJwtToken(payload: Record<string, any>): Promise<string
     .setProtectedHeader({ alg: "HS256" })
     .setIssuedAt()
     .setExpirationTime("7d")
-    .sign(JWT_SECRET);
+    .sign(new TextEncoder().encode(getJwtSecret()));
 }
 
 // Verify JWT Token safely
 export async function verifyJwtToken(token: string) {
+  const secret = new TextEncoder().encode(getJwtSecret());
+
   try {
-    const verified = await jwtVerify(token, JWT_SECRET);
+    const verified = await jwtVerify(token, secret);
     return verified.payload;
   } catch {
     return null;

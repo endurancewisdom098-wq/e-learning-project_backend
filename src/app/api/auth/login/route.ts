@@ -3,12 +3,14 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import { getJwtSecret } from "@/lib/jwt-secret";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 export async function POST(request: Request) {
   try {
+    const secret = getJwtSecret();
     const body = await request.json();
     const { email, password } = body;
 
@@ -38,7 +40,6 @@ export async function POST(request: Request) {
       );
     }
 
-    const secret = process.env.JWT_SECRET || "fallback_secret_key";
     const token = jwt.sign(
       { userId: user.id, email: user.email, role: user.role },
       secret,
@@ -73,6 +74,12 @@ export async function POST(request: Request) {
     return response;
   } catch (error) {
     console.error("Login API Error:", error);
+    if (error instanceof Error && error.message === "JWT_SECRET is not configured") {
+      return NextResponse.json(
+        { success: false, message: "Authentication is not configured" },
+        { status: 500 }
+      );
+    }
     return NextResponse.json(
       { success: false, message: "Internal server error" },
       { status: 500 }
